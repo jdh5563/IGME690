@@ -18,11 +18,6 @@ public struct TextureUV
 	public float pixelEndY2;
 }
 
-// COOL SEEDS:
-// 7581
-// 59544
-// 60983
-// 59787
 public class TerrainGeneration : MonoBehaviour
 {
     public int mRandomSeed;
@@ -31,11 +26,16 @@ public class TerrainGeneration : MonoBehaviour
     public int mMaxHeight;
     public Material mTerrainMaterial;
 
-    private GameObject realTerrain;
+    private List<GameObject> realTerrains = new List<GameObject>();
     private NoiseAlgorithm terrainNoise;
     private List<TextureUV> terrainUVs;
 
-    private List<TextureUV> LoadUVFromJSON(string inputFilePath)
+    private int waterOrLava;
+    private int sandOrObsidian;
+
+    [SerializeField] private List<GameObject> prefabs;
+
+	private List<TextureUV> LoadUVFromJSON(string inputFilePath)
     {
         string json = File.ReadAllText(inputFilePath);
         string[] splitJson = json.Split(' ');
@@ -89,22 +89,36 @@ public class TerrainGeneration : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // create a height map using perlin noise and fractal brownian motion
-        mRandomSeed= (int)(UnityEngine.Random.value * 100000);
+		// create a height map using perlin noise and fractal brownian motion
+		// COOL SEEDS:
+		// 60983
+		//mRandomSeed = (int)(UnityEngine.Random.value * 100000);
         terrainNoise = new NoiseAlgorithm();
         terrainNoise.InitializeNoise(mWidth + 1, mDepth + 1, mRandomSeed);
         terrainNoise.InitializePerlinNoise(1.0f, 0.5f, 8, 2.0f, 0.5f, 0.01f, 1.0f);
         NativeArray<float> terrainHeightMap = new NativeArray<float>((mWidth+1) * (mDepth+1), Allocator.Persistent);
-        terrainNoise.setNoise(terrainHeightMap, 0, 0);
-        terrainUVs = LoadUVFromJSON("uvinfo.dat");
 
-		// create the mesh and set it to the terrain variable
-		realTerrain = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        realTerrain.transform.position = new Vector3(0, 0, 0);
-        MeshRenderer meshRenderer = realTerrain.GetComponent<MeshRenderer>();
-        MeshFilter meshFilter = realTerrain.GetComponent<MeshFilter>();
-        meshRenderer.material = mTerrainMaterial;
-        meshFilter.mesh = GenerateTerrainMesh(terrainHeightMap);
+        terrainUVs = LoadUVFromJSON("uvinfo.dat");
+		waterOrLava = CoinFlip() ? 4 : 3;
+		sandOrObsidian = waterOrLava == 4 ? (CoinFlip() ? 12 : 13) : 5;
+
+        // create the mesh and set it to the terrain variable
+        int numChunks = 256;
+        int mapWidth = (int)Mathf.Sqrt(numChunks);
+        int depthLevel = -1;
+		for (int i = 0; i < numChunks; i++)
+        {
+			realTerrains.Add(GameObject.CreatePrimitive(PrimitiveType.Cube));
+			MeshRenderer meshRenderer = realTerrains[i].GetComponent<MeshRenderer>();
+			MeshFilter meshFilter = realTerrains[i].GetComponent<MeshFilter>();
+			meshRenderer.material = mTerrainMaterial;
+
+			if (i % mapWidth == 0) depthLevel++;
+			terrainNoise.setNoise(terrainHeightMap, mWidth * (i % mapWidth), mDepth * depthLevel);
+			realTerrains[i].transform.position = new Vector3(mWidth * (i % mapWidth), 0, mDepth * depthLevel);
+			meshFilter.mesh = GenerateTerrainMesh(terrainHeightMap, mWidth * (i % mapWidth), mDepth * depthLevel);
+		}
+
         terrainHeightMap.Dispose();
         NoiseAlgorithm.OnExit();
     }
@@ -114,16 +128,21 @@ public class TerrainGeneration : MonoBehaviour
       
     }
 
+    /// <summary>
+    /// Flip a coin and return the result.
+    /// </summary>
+    private bool CoinFlip()
+    {
+        return UnityEngine.Random.Range(0.0f, 1.0f) > 0.5f;
+	}
+
     // create a new mesh with
     // perlin noise done blankly from Mathf.PerlinNoise in Unity
     // without any other features
     // makes a quad and connects it with the next quad
     // uses whatever texture the material is given
-    public Mesh GenerateTerrainMesh(NativeArray<float> heightMap)
+    public Mesh GenerateTerrainMesh(NativeArray<float> heightMap, float xPos, float zPos)
     {
-		int waterOrLava = UnityEngine.Random.Range(0.0f, 1.0f) > 0.5f ? 15 : 8;
-		int stoneOrGrass = UnityEngine.Random.Range(0.0f, 1.0f) > 0.5f ? 14 : 6;
-
 		int width = mWidth + 1, depth = mDepth + 1;
         int height = mMaxHeight;
         int indicesIndex = 0;
@@ -153,36 +172,79 @@ public class TerrainGeneration : MonoBehaviour
                     vert.Add(new float3(x + 1, useAltXPlusY, z));  
                     vert.Add(new float3(x + 1, useAltXAndZPlusY, z + 1));
 
-					// add uv's based on height
-					// remember to give it all 4 sides of the image coords
-					if (y + mMaxHeight / 2f < mMaxHeight * 0.4f)
+                    // add uv's based on height
+                    // remember to give it all 4 sides of the image coords
+
+                    // Water or Lava
+                    if (y + mMaxHeight / 2f < mMaxHeight * 0.43f)
                     {
-						uvs.Add(new Vector2(terrainUVs[waterOrLava].pixelStartX, terrainUVs[waterOrLava].pixelStartY));
-						uvs.Add(new Vector2(terrainUVs[waterOrLava].pixelStartX, terrainUVs[waterOrLava].pixelEndY));
-						uvs.Add(new Vector2(terrainUVs[waterOrLava].pixelEndX, terrainUVs[waterOrLava].pixelEndY));
-						uvs.Add(new Vector2(terrainUVs[waterOrLava].pixelEndX, terrainUVs[waterOrLava].pixelStartY));
-					}
-                    else if(y + mMaxHeight / 2f < mMaxHeight * 0.45f)
+                        uvs.Add(new Vector2(terrainUVs[waterOrLava].pixelStartX, terrainUVs[waterOrLava].pixelStartY));
+                        uvs.Add(new Vector2(terrainUVs[waterOrLava].pixelStartX, terrainUVs[waterOrLava].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[waterOrLava].pixelEndX, terrainUVs[waterOrLava].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[waterOrLava].pixelEndX, terrainUVs[waterOrLava].pixelStartY));
+                    }
+                    // Sand or Obsidian
+                    else if (y + mMaxHeight / 2f < mMaxHeight * 0.45f)
                     {
-						uvs.Add(new Vector2(terrainUVs[12].pixelStartX, terrainUVs[12].pixelStartY));
-						uvs.Add(new Vector2(terrainUVs[12].pixelStartX, terrainUVs[12].pixelEndY));
-						uvs.Add(new Vector2(terrainUVs[12].pixelEndX, terrainUVs[12].pixelEndY));
-						uvs.Add(new Vector2(terrainUVs[12].pixelEndX, terrainUVs[12].pixelStartY));
-					}
-                    else if(y + mMaxHeight / 2f < mMaxHeight * 0.6f)
+                        uvs.Add(new Vector2(terrainUVs[sandOrObsidian].pixelStartX, terrainUVs[sandOrObsidian].pixelStartY));
+                        uvs.Add(new Vector2(terrainUVs[sandOrObsidian].pixelStartX, terrainUVs[sandOrObsidian].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[sandOrObsidian].pixelEndX, terrainUVs[sandOrObsidian].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[sandOrObsidian].pixelEndX, terrainUVs[sandOrObsidian].pixelStartY));
+                    }
+                    // Grass. 1% chance to spawn a tree
+                    else if (y + mMaxHeight / 2f < mMaxHeight * 0.54f)
                     {
-						uvs.Add(new Vector2(terrainUVs[stoneOrGrass].pixelStartX, terrainUVs[stoneOrGrass].pixelStartY));
-						uvs.Add(new Vector2(terrainUVs[stoneOrGrass].pixelStartX, terrainUVs[stoneOrGrass].pixelEndY));
-						uvs.Add(new Vector2(terrainUVs[stoneOrGrass].pixelEndX, terrainUVs[stoneOrGrass].pixelEndY));
-						uvs.Add(new Vector2(terrainUVs[stoneOrGrass].pixelEndX, terrainUVs[stoneOrGrass].pixelStartY));
+                        uvs.Add(new Vector2(terrainUVs[2].pixelStartX, terrainUVs[2].pixelStartY));
+                        uvs.Add(new Vector2(terrainUVs[2].pixelStartX, terrainUVs[2].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[2].pixelEndX, terrainUVs[2].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[2].pixelEndX, terrainUVs[2].pixelStartY));
+
+                        if (UnityEngine.Random.Range(0f, 1f) < 0.01f)
+                        {
+                            Instantiate(CoinFlip() ? prefabs[0] : prefabs[1], new Vector3(x + xPos, y, z + zPos), Quaternion.identity);
+                        }
+                    }
+                    // Rock. 1% chance to spawn ore
+                    else if (y + mMaxHeight / 2f < mMaxHeight * 0.6f)
+                    {
+                        uvs.Add(new Vector2(terrainUVs[15].pixelStartX, terrainUVs[15].pixelStartY));
+                        uvs.Add(new Vector2(terrainUVs[15].pixelStartX, terrainUVs[15].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[15].pixelEndX, terrainUVs[15].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[15].pixelEndX, terrainUVs[15].pixelStartY));
+
+						if (UnityEngine.Random.Range(0f, 1f) < 0.01f)
+						{
+                            switch(UnityEngine.Random.Range(0, 6))
+                            {
+								case 0:
+                                    Instantiate(prefabs[2], new Vector3(x + xPos, y, z + zPos), Quaternion.identity);
+									break;
+								case 1:
+									Instantiate(prefabs[3], new Vector3(x + xPos, y, z + zPos), Quaternion.identity);
+									break;
+								case 2:
+									Instantiate(prefabs[4], new Vector3(x + xPos, y, z + zPos), Quaternion.identity);
+									break;
+								case 3:
+									Instantiate(prefabs[5], new Vector3(x + xPos, y, z + zPos), Quaternion.identity);
+									break;
+								case 4:
+									Instantiate(prefabs[6], new Vector3(x + xPos, y, z + zPos), Quaternion.identity);
+									break;
+								case 5:
+									Instantiate(prefabs[7], new Vector3(x + xPos, y, z + zPos), Quaternion.identity);
+									break;
+							}
+						}
 					}
+                    // Snow
                     else
                     {
-						uvs.Add(new Vector2(terrainUVs[13].pixelStartX, terrainUVs[13].pixelStartY));
-						uvs.Add(new Vector2(terrainUVs[13].pixelStartX, terrainUVs[13].pixelEndY));
-						uvs.Add(new Vector2(terrainUVs[13].pixelEndX, terrainUVs[13].pixelEndY));
-						uvs.Add(new Vector2(terrainUVs[13].pixelEndX, terrainUVs[13].pixelStartY));
-					}
+                        uvs.Add(new Vector2(terrainUVs[14].pixelStartX, terrainUVs[14].pixelStartY));
+                        uvs.Add(new Vector2(terrainUVs[14].pixelStartX, terrainUVs[14].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[14].pixelEndX, terrainUVs[14].pixelEndY));
+                        uvs.Add(new Vector2(terrainUVs[14].pixelEndX, terrainUVs[14].pixelStartY));
+                    }
                     
                     // front or top face indices for a quad
                     //0,2,1,0,3,2

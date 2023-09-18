@@ -380,11 +380,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6592cff144e4f049b9ab5479776f005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mRandomSeed: 24573
+  mRandomSeed: 60983
   mWidth: 100
   mDepth: 100
   mMaxHeight: 100
   mTerrainMaterial: {fileID: 2100000, guid: efe5727227351d34fb6fd7600aa11b63, type: 2}
+  prefabs:
+  - {fileID: 1267389705848690334, guid: 5f79e43d94d745540bf6f5129d988579, type: 3}
+  - {fileID: 120491872760815637, guid: 73351ca9644af1044a7069111edab0e3, type: 3}
+  - {fileID: 6739451377549099744, guid: f240e496fff33084a81e51db0d63447a, type: 3}
+  - {fileID: 3713941058508953593, guid: 8d9b64cdf90acaa4aba1ae49ee4bebf4, type: 3}
+  - {fileID: 8558973153965666329, guid: a6fc22b76b750744fa8583cda986de1d, type: 3}
+  - {fileID: 9127340071324763366, guid: 6a297f9a0ad95bd489b70e5e4c93b0d5, type: 3}
+  - {fileID: 2409482269881480698, guid: eea0aa163e0943d4691e74a8cff29e03, type: 3}
+  - {fileID: 6338281642493950194, guid: 882d7118a05623b44bab4aa07b4736c1, type: 3}
 --- !u!4 &2092641476
 Transform:
   m_ObjectHideFlags: 0
