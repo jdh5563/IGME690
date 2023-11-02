@@ -4,23 +4,31 @@ using UnityEngine;
 
 public class CellularAutomata : MonoBehaviour
 {
+	[Header("Cellular Automata Objects"), Space]
     [SerializeField] private GameObject cellPrefab;
 	[SerializeField] private Material aliveMat;
 	[SerializeField] private Material deadMat;
-
     [SerializeField] private GameObject cellContainer;
-    [SerializeField] private float simulationDelay;
 
+	[Space, Header("Cellular Automata Parameters"), Space]
 	[SerializeField] private int width;
     [SerializeField] private int height;
     [SerializeField] private float aliveChance;
     [SerializeField] private Vector2 killRange;
     [SerializeField] private int reviveThreshold;
 
-    [SerializeField] private bool debugFlag;
+	[Space, Header("A* Objects"), Space]
+	[SerializeField] private Material roadMat;
 
-    private Cell[,] cells;
+	[Space, Header("Helpful Tools"), Space]
+    [SerializeField] private int maxCAIterations;
+	[SerializeField] private int maxAStarIterations;
+	[SerializeField] private bool debugFlag;
+	[SerializeField] private float simulationDelay;
+
+	private Cell[,] cells;
     private bool isPausing = false;
+    private int numCAIterations = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +39,7 @@ public class CellularAutomata : MonoBehaviour
         {
             for(int j = 0; j < width; j++)
             {
-                cells[i, j] = Instantiate(cellPrefab, new Vector3(j * cellPrefab.transform.localScale.x, 0, i * cellPrefab.transform.localScale.z), Quaternion.identity, cellContainer.transform).GetComponent<Cell>();
+                cells[i, j] = Instantiate(cellPrefab, cellContainer.transform.position + new Vector3(j * cellPrefab.transform.localScale.x, 0, i * cellPrefab.transform.localScale.z), Quaternion.identity, cellContainer.transform).GetComponent<Cell>();
                 cells[i, j].X = j;
                 cells[i, j].Y = i;
 				cells[i, j].IsAlive = Random.Range(0f, 1f) < aliveChance;
@@ -43,11 +51,60 @@ public class CellularAutomata : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (debugFlag && !isPausing) StartCoroutine(RunSimulation());
-        else cells = Simulate();
+        // TODO: Run multiple iterations of A* where there are multiple stops on the way to the true end for roads
+
+        // Run cellular automata
+        if (numCAIterations < maxCAIterations)
+        {
+            if (debugFlag && !isPausing) StartCoroutine(RunDelayedSimulation());
+            else cells = Simulate();
+
+			if (++numCAIterations == maxCAIterations)
+			{
+				ExtrudeCells();
+
+				for (int i = 0; i < maxAStarIterations; i++)
+				{
+					Cell cell;
+					do
+					{
+						switch (i % 4)
+						{
+							// Q1
+							case 0:
+								cell = cells[Random.Range(height / 2, height), Random.Range(width / 2, width)];
+								break;
+							// Q2
+							case 1:
+								cell = cells[Random.Range(height / 2, height), Random.Range(0, width / 2)];
+								break;
+							// Q3
+							case 2:
+								cell = cells[Random.Range(0, height / 2), Random.Range(0, width / 2)];
+								break;
+							// Q4
+							default:
+								cell = cells[Random.Range(0, height / 2), Random.Range(width / 2, width)];
+								break;
+						}
+					}
+					while (cell.IsAlive);
+
+					int numTries = 0;
+					while (!AStar(cell.gameObject)) 
+					{
+						if(++numTries < 10)
+						{
+							i--;
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
-    private IEnumerator RunSimulation()
+    private IEnumerator RunDelayedSimulation()
     {
         isPausing = true;
         cells = Simulate();
@@ -57,7 +114,8 @@ public class CellularAutomata : MonoBehaviour
         isPausing = false;
     }
 
-    private Cell[,] Simulate()
+	#region Cellular Automata
+	private Cell[,] Simulate()
     {
 		Cell[,] newCells = new Cell[height, width];
         List<Cell> cellsToDestroy = new List<Cell>();
@@ -74,7 +132,7 @@ public class CellularAutomata : MonoBehaviour
 					if (numLivingNeighbors < killRange.x || numLivingNeighbors > killRange.y)
 					{
                         cellsToDestroy.Add(cells[i, j]);
-						newCells[i, j] = Instantiate(cellPrefab, new Vector3(j * cellPrefab.transform.localScale.x, 0, i * cellPrefab.transform.localScale.z), Quaternion.identity, cellContainer.transform).GetComponent<Cell>();
+						newCells[i, j] = Instantiate(cellPrefab, cellContainer.transform.position + new Vector3(j * cellPrefab.transform.localScale.x, 0, i * cellPrefab.transform.localScale.z), Quaternion.identity, cellContainer.transform).GetComponent<Cell>();
 						newCells[i, j].X = j;
 						newCells[i, j].Y = i;
 						newCells[i, j].IsAlive = false;
@@ -84,7 +142,7 @@ public class CellularAutomata : MonoBehaviour
 				else if (numLivingNeighbors == reviveThreshold)
 				{
 					cellsToDestroy.Add(cells[i, j]);
-					newCells[i, j] = Instantiate(cellPrefab, new Vector3(j * cellPrefab.transform.localScale.x, 0, i * cellPrefab.transform.localScale.z), Quaternion.identity, cellContainer.transform).GetComponent<Cell>();
+					newCells[i, j] = Instantiate(cellPrefab, cellContainer.transform.position + new Vector3(j * cellPrefab.transform.localScale.x, 0, i * cellPrefab.transform.localScale.z), Quaternion.identity, cellContainer.transform).GetComponent<Cell>();
 					newCells[i, j].X = j;
 					newCells[i, j].Y = i;
 					newCells[i, j].IsAlive = true;
@@ -115,4 +173,147 @@ public class CellularAutomata : MonoBehaviour
 
         return numLivingNeighbors;
 	}
+
+    private void ExtrudeCells()
+    {
+		foreach (Cell cell in cells)
+		{
+			if (cell.IsAlive)
+			{
+				int height = Random.Range(3, 21);
+				for (int i = 1; i <= height; i++)
+				{
+					// This should be replaced with a set of prefabs that represent blocks with windows/lights
+					GameObject building = Instantiate(cellPrefab, new Vector3(cell.transform.position.x, i, cell.transform.position.z), Quaternion.identity, cell.transform);
+					building.GetComponent<MeshRenderer>().material = aliveMat;
+				}
+			}
+		}
+	}
+	#endregion
+
+	#region A* Roads
+	private bool AStar(GameObject startCell)
+	{
+		GameObject endCell;
+
+		do
+		{
+			if (startCell.transform.position.x < width / 2)
+			{
+				// Go to Q2
+				if (startCell.transform.position.z < height / 2)
+				{
+					endCell = cells[Random.Range(height / 2, height), Random.Range(0, width / 2)].gameObject;
+				}
+				// Go to Q1
+				else
+				{
+					endCell = cells[Random.Range(height / 2, height), Random.Range(width / 2, width)].gameObject;
+				}
+			}
+			else
+			{
+				// Go to Q3
+				if (startCell.transform.position.z < height / 2)
+				{
+					endCell = cells[Random.Range(0, height / 2), Random.Range(0, width / 2)].gameObject;
+				}
+				// Go to Q4
+				else
+				{
+					endCell = cells[Random.Range(0, height / 2), Random.Range(width / 2, width)].gameObject;
+				}
+			}
+		}
+		while (endCell.GetComponent<Cell>().IsAlive);
+
+		List < GameObject > openList = new List<GameObject>();
+		List<GameObject> closedList = new List<GameObject>();
+
+		openList.Add(startCell);
+
+		GameObject currentCell;
+
+		while(openList.Count > 0)
+		{
+			currentCell = FindClosestCell(openList, endCell);
+
+			if (currentCell == endCell)
+			{
+				closedList.Add(currentCell);
+				break;
+			}
+
+			for(int i = 0; i < 4; i++)
+			{
+				GameObject nextCell;
+
+				switch (i)
+				{
+					// Look up
+					case 0:
+						if (currentCell.GetComponent<Cell>().Y == height - 1 || cells[currentCell.GetComponent<Cell>().Y + 1, currentCell.GetComponent<Cell>().X].IsAlive) continue;
+						nextCell = cells[currentCell.GetComponent<Cell>().Y + 1, currentCell.GetComponent<Cell>().X].gameObject;
+						break;
+					// Look right
+					case 1:
+						if (currentCell.GetComponent<Cell>().X == width - 1 || cells[currentCell.GetComponent<Cell>().Y, currentCell.GetComponent<Cell>().X + 1].IsAlive) continue;
+						nextCell = cells[currentCell.GetComponent<Cell>().Y, currentCell.GetComponent<Cell>().X + 1].gameObject;
+						break;
+					// Look down
+					case 2:
+						if (currentCell.GetComponent<Cell>().Y == 0 || cells[currentCell.GetComponent<Cell>().Y - 1, currentCell.GetComponent<Cell>().X].IsAlive) continue;
+						nextCell = cells[currentCell.GetComponent<Cell>().Y - 1, currentCell.GetComponent<Cell>().X].gameObject;
+						break;
+					// Look left				
+					default:
+						if (currentCell.GetComponent<Cell>().X == 0 || cells[currentCell.GetComponent<Cell>().Y, currentCell.GetComponent<Cell>().X - 1].IsAlive) continue;
+						nextCell = cells[currentCell.GetComponent<Cell>().Y, currentCell.GetComponent<Cell>().X - 1].gameObject;
+						break;
+				}
+
+				if (closedList.Contains(nextCell) || openList.Contains(nextCell)) continue;
+
+				openList.Add(nextCell);
+			}
+
+			openList.Remove(currentCell);
+			closedList.Add(currentCell);
+		}
+
+		if (closedList[closedList.Count - 1] != endCell) return false;
+
+		foreach(GameObject cell in closedList)
+		{
+			cell.GetComponent<MeshRenderer>().material = roadMat;
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// Find the cell closest to the end.
+	/// </summary>
+	private GameObject FindClosestCell(List<GameObject> cells, GameObject endCell)
+	{
+		GameObject closestCell = cells[0];
+		for(int i = 1; i < cells.Count; i++)
+		{
+			if (ManhattanHeuristic(cells[i], endCell) < ManhattanHeuristic(closestCell, endCell)) closestCell = cells[i];
+		}
+
+		return closestCell;
+	}
+
+	/// <summary>
+	/// Compute a Manhattan Heuristic.
+	/// </summary>
+	private float ManhattanHeuristic(GameObject start, GameObject end)
+	{
+		return
+			Mathf.Abs(start.transform.position.x - end.transform.position.x) +
+			Mathf.Abs(start.transform.position.z - end.transform.position.z);
+	}
+	#endregion
 }
