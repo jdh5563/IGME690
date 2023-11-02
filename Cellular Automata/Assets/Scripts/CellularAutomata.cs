@@ -17,6 +17,8 @@ public class CellularAutomata : MonoBehaviour
     [SerializeField] private Vector2 killRange;
     [SerializeField] private int reviveThreshold;
 
+    [SerializeField] private bool debugFlag;
+
     private Cell[,] cells;
     private bool isPausing = false;
 
@@ -41,8 +43,9 @@ public class CellularAutomata : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isPausing) StartCoroutine(RunSimulation());
-    }
+        if (debugFlag && !isPausing) StartCoroutine(RunSimulation());
+        else cells = Simulate();
+	}
 
     private IEnumerator RunSimulation()
     {
@@ -63,15 +66,17 @@ public class CellularAutomata : MonoBehaviour
 		{
 			for (int j = 0; j < width; j++)
 			{
-				int numLivingNeighbors = CountLivingNeighbors(j, i);
+
+				int numLivingNeighbors = CountLivingNeighbors(cells[i, j].X, cells[i, j].Y);
                 newCells[i, j] = cells[i, j];
 				if (cells[i, j].IsAlive)
 				{
-                    Debug.Log(cells[i, j].X + " " + cells[i, j].Y);
 					if (numLivingNeighbors < killRange.x || numLivingNeighbors > killRange.y)
 					{
                         cellsToDestroy.Add(cells[i, j]);
 						newCells[i, j] = Instantiate(cellPrefab, new Vector3(j * cellPrefab.transform.localScale.x, 0, i * cellPrefab.transform.localScale.z), Quaternion.identity, cellContainer.transform).GetComponent<Cell>();
+						newCells[i, j].X = j;
+						newCells[i, j].Y = i;
 						newCells[i, j].IsAlive = false;
 						newCells[i, j].GetComponent<MeshRenderer>().material = deadMat;
 					}
@@ -80,6 +85,8 @@ public class CellularAutomata : MonoBehaviour
 				{
 					cellsToDestroy.Add(cells[i, j]);
 					newCells[i, j] = Instantiate(cellPrefab, new Vector3(j * cellPrefab.transform.localScale.x, 0, i * cellPrefab.transform.localScale.z), Quaternion.identity, cellContainer.transform).GetComponent<Cell>();
+					newCells[i, j].X = j;
+					newCells[i, j].Y = i;
 					newCells[i, j].IsAlive = true;
 					newCells[i, j].GetComponent<MeshRenderer>().material = aliveMat;
 				}
@@ -99,24 +106,11 @@ public class CellularAutomata : MonoBehaviour
 		{
 			for (int j = -1; j < 2; j++)
 			{
-                //if(!(i == 0 && j == 0) && x + j >= 0 && y + i >= 0 && x + j < width && y + i < height && cells[x + j, y + i].IsAlive)
-                //{
-                //    numLivingNeighbors++;
-                //}
-
-                if(i == 0 && j == 0)
-                {
-
-                }
-                else if(x + j < 0 || x + j > width - 1 ||  y + i < 0 || y + i > height - 1)
-                {
-
-                }
-                else if (cells[x + j, y + i].IsAlive)
+                if (!(i == 0 && j == 0) && x + j >= 0 && y + i >= 0 && x + j < width && y + i < height && cells[y + i, x + j].IsAlive)
                 {
                     numLivingNeighbors++;
                 }
-			}
+            }
 		}
 
         return numLivingNeighbors;

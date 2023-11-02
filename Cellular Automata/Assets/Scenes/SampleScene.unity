@@ -157,11 +157,12 @@ MonoBehaviour:
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 2099087488}
   simulationDelay: 0.1
-  width: 10
-  height: 10
+  width: 100
+  height: 100
   aliveChance: 0.5
   killRange: {x: 2, y: 3}
   reviveThreshold: 3
+  debugFlag: 0
 --- !u!4 &215938066
 Transform:
   m_ObjectHideFlags: 0
