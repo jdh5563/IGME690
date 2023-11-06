@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class CellularAutomata : MonoBehaviour
 {
-	[Header("Cellular Automata Objects"), Space]
+	[Header("Random Seed"), Space]
+	[SerializeField] private int seed;
+
+	[Space, Header("Cellular Automata Objects"), Space]
     [SerializeField] private GameObject cellPrefab;
+	[SerializeField] private GameObject needlePrefab;
 	[SerializeField] private Material aliveMat;
 	[SerializeField] private Material deadMat;
     [SerializeField] private GameObject cellContainer;
@@ -33,6 +37,9 @@ public class CellularAutomata : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		// 21363
+		// 15455
+		Random.InitState(seed);
         cells = new Cell[height, width];
 
         for(int i = 0; i < height; i++)
@@ -62,43 +69,48 @@ public class CellularAutomata : MonoBehaviour
 			if (++numCAIterations == maxCAIterations)
 			{
 				ExtrudeCells();
+				Cell cell;
+				do
+				{
+					switch (Random.Range(0, 4))
+					{
+						// Q1
+						case 0:
+							cell = cells[Random.Range(height / 2, height), Random.Range(width / 2, width)];
+							break;
+						// Q2
+						case 1:
+							cell = cells[Random.Range(height / 2, height), Random.Range(0, width / 2)];
+							break;
+						// Q3
+						case 2:
+							cell = cells[Random.Range(0, height / 2), Random.Range(0, width / 2)];
+							break;
+						// Q4
+						default:
+							cell = cells[Random.Range(0, height / 2), Random.Range(width / 2, width)];
+							break;
+					}
+				}
+				while (cell.IsAlive);
 
 				for (int i = 0; i < maxAStarIterations; i++)
 				{
-					Cell cell;
+					int numTries = 0;
+					GameObject newStart = null;
 					do
 					{
-						switch (i % 4)
-						{
-							// Q1
-							case 0:
-								cell = cells[Random.Range(height / 2, height), Random.Range(width / 2, width)];
-								break;
-							// Q2
-							case 1:
-								cell = cells[Random.Range(height / 2, height), Random.Range(0, width / 2)];
-								break;
-							// Q3
-							case 2:
-								cell = cells[Random.Range(0, height / 2), Random.Range(0, width / 2)];
-								break;
-							// Q4
-							default:
-								cell = cells[Random.Range(0, height / 2), Random.Range(width / 2, width)];
-								break;
-						}
-					}
-					while (cell.IsAlive);
-
-					int numTries = 0;
-					while (!AStar(cell.gameObject)) 
-					{
-						if(++numTries < 10)
+						if (++numTries > 10)
 						{
 							i--;
 							break;
 						}
+
+						newStart = AStar(cell.gameObject);
 					}
+					while (newStart == null);
+
+					if (newStart != null) cell = newStart.GetComponent<Cell>();
 				}
 			}
 		}
@@ -187,13 +199,15 @@ public class CellularAutomata : MonoBehaviour
 					GameObject building = Instantiate(cellPrefab, new Vector3(cell.transform.position.x, i, cell.transform.position.z), Quaternion.identity, cell.transform);
 					building.GetComponent<MeshRenderer>().material = aliveMat;
 				}
+
+				if (Random.Range(0f, 1f) < 0.25f) Instantiate(needlePrefab, new Vector3(cell.transform.position.x, height + 1.5f, cell.transform.position.z), Quaternion.identity, cell.transform);
 			}
 		}
 	}
 	#endregion
 
 	#region A* Roads
-	private bool AStar(GameObject startCell)
+	private GameObject AStar(GameObject startCell)
 	{
 		GameObject endCell;
 
@@ -282,14 +296,14 @@ public class CellularAutomata : MonoBehaviour
 			closedList.Add(currentCell);
 		}
 
-		if (closedList[closedList.Count - 1] != endCell) return false;
+		if (closedList[closedList.Count - 1] != endCell) return null;
 
 		foreach(GameObject cell in closedList)
 		{
 			cell.GetComponent<MeshRenderer>().material = roadMat;
 		}
 
-		return true;
+		return endCell;
 	}
 
 	/// <summary>

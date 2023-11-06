@@ -152,7 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2770179f986620e46b346a20c4ef003b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 0
   cellPrefab: {fileID: 264065120306296803, guid: e74e9d3a34c837746b6e5d48f1d7f9df, type: 3}
+  needlePrefab: {fileID: 0}
   aliveMat: {fileID: 2100000, guid: 2af2056f0242dc442a896f43f03e84f6, type: 2}
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 1598035120}
@@ -210,7 +212,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2770179f986620e46b346a20c4ef003b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 15455
   cellPrefab: {fileID: 264065120306296803, guid: e74e9d3a34c837746b6e5d48f1d7f9df, type: 3}
+  needlePrefab: {fileID: 1314252288239425581, guid: 3f1d70e450db70b468ba32a411e7b6ed, type: 3}
   aliveMat: {fileID: 2100000, guid: 2af2056f0242dc442a896f43f03e84f6, type: 2}
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 2099087488}
@@ -362,7 +366,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2770179f986620e46b346a20c4ef003b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 0
   cellPrefab: {fileID: 264065120306296803, guid: e74e9d3a34c837746b6e5d48f1d7f9df, type: 3}
+  needlePrefab: {fileID: 0}
   aliveMat: {fileID: 2100000, guid: 2af2056f0242dc442a896f43f03e84f6, type: 2}
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 900225065}
@@ -433,6 +439,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -514,6 +521,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c287dcd84df2704396033d7f9a7c495, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 15
+  sensitivity: 5
 --- !u!1 &1415052379
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,7 +564,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2770179f986620e46b346a20c4ef003b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 0
   cellPrefab: {fileID: 264065120306296803, guid: e74e9d3a34c837746b6e5d48f1d7f9df, type: 3}
+  needlePrefab: {fileID: 0}
   aliveMat: {fileID: 2100000, guid: 2af2056f0242dc442a896f43f03e84f6, type: 2}
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 1956997247}
