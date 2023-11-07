@@ -10,6 +10,7 @@ public class CellularAutomata : MonoBehaviour
 	[Space, Header("Cellular Automata Objects"), Space]
     [SerializeField] private GameObject cellPrefab;
 	[SerializeField] private GameObject needlePrefab;
+	[SerializeField] private GameObject carPrefab;
 	[SerializeField] private Material aliveMat;
 	[SerializeField] private Material deadMat;
     [SerializeField] private GameObject cellContainer;
@@ -301,6 +302,59 @@ public class CellularAutomata : MonoBehaviour
 		foreach(GameObject cell in closedList)
 		{
 			cell.GetComponent<MeshRenderer>().material = roadMat;
+
+			// Using 24% so that there are nicely even odds for color
+			float carChance = Random.Range(0f, 1f);
+			if (carChance < 0.24f)
+			{
+				MeshRenderer car = Instantiate(carPrefab, new Vector3(cell.transform.position.x, carPrefab.transform.position.y, cell.transform.position.z), Quaternion.identity, cell.transform).GetComponentInChildren<MeshRenderer>();
+				Color carColor = new Color();
+				
+				if (carChance < 0.08f)
+				{
+					carColor.r = 1f;
+					if(carChance < 0.04f)
+					{
+						carColor.g = Random.Range(0f, 1f);
+						carColor.b = 0f;
+					}
+					else
+					{
+						carColor.g = 0f;
+						carColor.b = Random.Range(0f, 1f);
+					}
+				}
+				else if (carChance < 0.16f)
+				{
+					carColor.g = 1f;
+					if (carChance < 0.12f)
+					{
+						carColor.r = Random.Range(0f, 1f);
+						carColor.b = 0f;
+					}
+					else
+					{
+						carColor.r = 0f;
+						carColor.b = Random.Range(0f, 1f);
+					}
+				}
+				else
+				{
+					carColor.b = 1f;
+					if (carChance < 0.2f)
+					{
+						carColor.r = Random.Range(0f, 1f);
+						carColor.g = 0f;
+					}
+					else
+					{
+						carColor.r = 0f;
+						carColor.g = Random.Range(0f, 1f);
+					}
+				}
+
+				car.material.color = carColor;
+			}
 		}
 
 		return endCell;

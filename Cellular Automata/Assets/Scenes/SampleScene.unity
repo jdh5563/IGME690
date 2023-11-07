@@ -155,6 +155,7 @@ MonoBehaviour:
   seed: 0
   cellPrefab: {fileID: 264065120306296803, guid: e74e9d3a34c837746b6e5d48f1d7f9df, type: 3}
   needlePrefab: {fileID: 0}
+  carPrefab: {fileID: 0}
   aliveMat: {fileID: 2100000, guid: 2af2056f0242dc442a896f43f03e84f6, type: 2}
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 1598035120}
@@ -215,6 +216,7 @@ MonoBehaviour:
   seed: 15455
   cellPrefab: {fileID: 264065120306296803, guid: e74e9d3a34c837746b6e5d48f1d7f9df, type: 3}
   needlePrefab: {fileID: 1314252288239425581, guid: 3f1d70e450db70b468ba32a411e7b6ed, type: 3}
+  carPrefab: {fileID: 8329404220609034998, guid: c07a1582c792580488b10982671da1f3, type: 3}
   aliveMat: {fileID: 2100000, guid: 2af2056f0242dc442a896f43f03e84f6, type: 2}
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 2099087488}
@@ -369,6 +371,7 @@ MonoBehaviour:
   seed: 0
   cellPrefab: {fileID: 264065120306296803, guid: e74e9d3a34c837746b6e5d48f1d7f9df, type: 3}
   needlePrefab: {fileID: 0}
+  carPrefab: {fileID: 0}
   aliveMat: {fileID: 2100000, guid: 2af2056f0242dc442a896f43f03e84f6, type: 2}
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 900225065}
@@ -567,6 +570,7 @@ MonoBehaviour:
   seed: 0
   cellPrefab: {fileID: 264065120306296803, guid: e74e9d3a34c837746b6e5d48f1d7f9df, type: 3}
   needlePrefab: {fileID: 0}
+  carPrefab: {fileID: 0}
   aliveMat: {fileID: 2100000, guid: 2af2056f0242dc442a896f43f03e84f6, type: 2}
   deadMat: {fileID: 2100000, guid: ea3d4439feebcf943b4229f4a1a0f033, type: 2}
   cellContainer: {fileID: 1956997247}
