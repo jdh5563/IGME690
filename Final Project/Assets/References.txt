@@ -1,3 +1,5 @@
 Creating Non-UI Buttons: https://www.youtube.com/watch?v=EfSImxUqmO0&ab_channel=Mtir%27sCode
 
-Procedurally generating a planet: https://www.youtube.com/playlist?list=PLFt_AvWsXl0cONs3T0By4puYy6GM22ko8
+Both of these are interesting approaches at generating planets procedurally for different purposes. I will only be using the first video series for my purposes but the second one is neat.
+Procedurally generating a planet for distant viewing: https://www.youtube.com/playlist?list=PLFt_AvWsXl0cONs3T0By4puYy6GM22ko8
+Procedurally generating a planet for near viewing: https://www.youtube.com/watch?v=lctXaT9pxA0&ab_channel=SebastianLague

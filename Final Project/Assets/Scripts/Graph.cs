@@ -19,29 +19,38 @@ public class Graph : MonoBehaviour
 
     private GameObject[,] graph;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        GenerateGraph();
-    }
+    [SerializeField]
+    private int seed;
 
-    // Update is called once per frame
-    void Update()
+	private void Awake()
+	{
+		if(seed == -1) seed = Random.Range(0, 100000); // Only set a random seed if we want a random one
+		Random.InitState(seed);
+	}
+
+	// Start is called before the first frame update
+	void Start()
+    {
+		GenerateGraph();
+	}
+
+	// Update is called once per frame
+	void Update()
     {
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-            foreach(Transform nodeTransform in transform)
-			{
+            foreach (Transform nodeTransform in transform)
+            {
                 Destroy(nodeTransform.gameObject);
-			}
+            }
 
             GenerateGraph();
-		}
+        }
     }
 
-    private void Connect(Vector2 from, Vector2 to, float distance)
+    private void Connect(Vector2 from, Vector2 to, float distance, Transform parent)
 	{
-        GameObject connection = Instantiate(connectionPrefab, Vector2.Lerp(from, to, 0.5f), Quaternion.identity, transform);
+        GameObject connection = Instantiate(connectionPrefab, Vector2.Lerp(from, to, 0.5f), Quaternion.identity, parent);
         SpriteRenderer connectionRenderer = connection.GetComponent<SpriteRenderer>();
         connectionRenderer.size = new Vector2(distance, connectionRenderer.size.y);
         connection.transform.Rotate(new Vector3(0, 0, Mathf.Atan2(from.y - to.y, from.x - to.x) * Mathf.Rad2Deg));
@@ -72,7 +81,9 @@ public class Graph : MonoBehaviour
 			}
 
             graph[currentIndex, j] = Instantiate(nodePrefab, new Vector2((j * cellWidth) + Random.Range(-cellWidth / 2.5f, cellWidth / 2.5f), (currentIndex * cellHeight) + Random.Range(-cellHeight / 2f, cellHeight / 2f)), Quaternion.identity, transform);
-            Connect(graph[previousIndex, j - 1].transform.position, graph[currentIndex, j].transform.position, Vector2.Distance(graph[previousIndex, j - 1].transform.position, graph[currentIndex, j].transform.position));
+            Connect(graph[previousIndex, j - 1].transform.position, graph[currentIndex, j].transform.position, Vector2.Distance(graph[previousIndex, j - 1].transform.position, graph[currentIndex, j].transform.position), graph[previousIndex, j - 1].transform);
+            graph[previousIndex, j - 1].GetComponent<Button>().hasConnections = true;
+            graph[currentIndex, j].GetComponent<Button>().hasConnections = true;
         }
 
 		for (int i = 0; i < graph.GetLength(0); i++)
@@ -92,12 +103,19 @@ public class Graph : MonoBehaviour
 
                             if (distance < 7f)
                             {
-                                Connect(graph[i, j].transform.position, node.transform.position, distance);
+                                Connect(graph[i, j].transform.position, node.transform.position, distance, graph[i, j].transform);
+								graph[i, j].GetComponent<Button>().hasConnections = true;
+								node.GetComponent<Button>().hasConnections = true;
                             }
                         }
                     }
                 }
             }
+        }
+
+        foreach(GameObject node in graph)
+        {
+            if (node && !node.GetComponent<Button>().hasConnections) Destroy(node);
         }
 
         //   for (int i = 0; i < graph.GetLength(0); i++)

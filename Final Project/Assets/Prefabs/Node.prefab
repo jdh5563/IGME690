@@ -122,3 +122,7 @@ MonoBehaviour:
   unityEvent:
     m_PersistentCalls:
       m_Calls: []
+  planetPrefabs:
+  - {fileID: 5276989613019303226, guid: e966fbde0ad13a545bc16bca97e9fd6f, type: 3}
+  - {fileID: 2145662918520229689, guid: c084a2ffc7288af4b806ded1eb4b0012, type: 3}
+  hasConnections: 0
