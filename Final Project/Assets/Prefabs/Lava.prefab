@@ -47,7 +47,7 @@ MonoBehaviour:
   resolution: 100
   autoUpdate: 1
   faceRenderMask: 0
-  shapeSettings: {fileID: 11400000, guid: bb563e90654574d4cb7d931456630f79, type: 2}
+  shapeSettings: {fileID: 11400000, guid: 816fc5928dd86174d81120e1fad0b184, type: 2}
   colourSettings: {fileID: 11400000, guid: 51315da5b63df1949bce7da8d9a0e0e6, type: 2}
   shapeSettingsFoldout: 1
   colourSettingsFoldout: 1

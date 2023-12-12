@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48e7d87040ce4f66a07c75b885f4f80, type: 3}
   m_Name: Sun
   m_EditorClassIdentifier: 
-  planetRadius: 1.8860722
+  planetRadius: 9.489536
   noiseLayers:
   - enabled: 1
     useFirstLayerAsMask: 0
@@ -24,8 +24,8 @@ MonoBehaviour:
         baseRoughness: 0
         roughness: 2.2
         persistence: 0.5
-        centre: {x: -4.2983856, y: 38.461422, z: -98.168045}
-        minValue: 1.1362917
+        centre: {x: -4.48, y: 38.461422, z: -98.168045}
+        minValue: 1.136292
       ridgidNoiseSettings:
         strength: 1
         numLayers: 1
@@ -42,15 +42,15 @@ MonoBehaviour:
       simpleNoiseSettings:
         strength: 1.3131828
         numLayers: 1
-        baseRoughness: 0.2943592
+        baseRoughness: 2.059808
         roughness: 2
         persistence: 0.5
-        centre: {x: 0, y: 0, z: 0}
+        centre: {x: 84.76973, y: 69.67697, z: -21.944962}
         minValue: 0.79506737
       ridgidNoiseSettings:
         strength: 1.4
         numLayers: 4
-        baseRoughness: 0.77
+        baseRoughness: 3
         roughness: 3.3
         persistence: 0.5
         centre: {x: 0, y: 0, z: 0}

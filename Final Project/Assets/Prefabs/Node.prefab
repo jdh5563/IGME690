@@ -125,4 +125,94 @@ MonoBehaviour:
   planetPrefabs:
   - {fileID: 5276989613019303226, guid: e966fbde0ad13a545bc16bca97e9fd6f, type: 3}
   - {fileID: 2145662918520229689, guid: c084a2ffc7288af4b806ded1eb4b0012, type: 3}
+  - {fileID: 3684375157098000382, guid: 3960733da0972cb48af082e07ff399f7, type: 3}
+  - {fileID: 5159514541405299172, guid: c616ba9dffc59834d9ba2f1d093cded3, type: 3}
   hasConnections: 0
+  sunGradients:
+  - serializedVersion: 2
+    key0: {r: 1, g: 0.8352941, b: 0.34509805, a: 1}
+    key1: {r: 0.9882353, g: 0.80784315, b: 0.33333334, a: 1}
+    key2: {r: 0.6509804, g: 0.07450981, b: 0, a: 0}
+    key3: {r: 0.6509434, g: 0.07569109, b: 0, a: 0}
+    key4: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key5: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key6: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 16580
+    ctime2: 65535
+    ctime3: 65535
+    ctime4: 65535
+    ctime5: 65535
+    ctime6: 65535
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  - serializedVersion: 2
+    key0: {r: 1, g: 0.7216981, b: 0.96938676, a: 1}
+    key1: {r: 0.9433962, g: 0.31594875, b: 0.8191491, a: 1}
+    key2: {r: 0.6320754, g: 0, b: 0.17482957, a: 0}
+    key3: {r: 0.6509434, g: 0.07569109, b: 0, a: 0}
+    key4: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key5: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key6: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 16577
+    ctime2: 65535
+    ctime3: 65535
+    ctime4: 65535
+    ctime5: 65535
+    ctime6: 65535
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  - serializedVersion: 2
+    key0: {r: 0.5188679, g: 0, b: 0.023163535, a: 1}
+    key1: {r: 0.2264151, g: 0, b: 0, a: 1}
+    key2: {r: 0.6132076, g: 0, b: 0.057647277, a: 0}
+    key3: {r: 0.6509434, g: 0.07569109, b: 0, a: 0}
+    key4: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key5: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key6: {r: 0.3773585, g: 0.04837929, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 16577
+    ctime2: 65535
+    ctime3: 65535
+    ctime4: 65535
+    ctime5: 65535
+    ctime6: 65535
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2

@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3684375157098000382}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.03, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -47,7 +47,7 @@ MonoBehaviour:
   resolution: 100
   autoUpdate: 1
   faceRenderMask: 0
-  shapeSettings: {fileID: 11400000, guid: bb563e90654574d4cb7d931456630f79, type: 2}
+  shapeSettings: {fileID: 11400000, guid: 796c8c56034c2cd4d9ff018e3bab596c, type: 2}
   colourSettings: {fileID: 11400000, guid: e009f460fe844d14c8dfe6c02224f776, type: 2}
   shapeSettingsFoldout: 0
   colourSettingsFoldout: 1
