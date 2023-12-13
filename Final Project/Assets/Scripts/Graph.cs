@@ -18,6 +18,7 @@ public class Graph : MonoBehaviour
     private int cellHeight;
 
     private GameObject[,] graph;
+    private GameObject startNode;
 
     [SerializeField]
     private int seed;
@@ -62,6 +63,7 @@ public class Graph : MonoBehaviour
 
 		int currentIndex = Random.Range(0, graph.GetLength(0));
 		graph[currentIndex, 0] = Instantiate(nodePrefab, new Vector2(Random.Range(-cellWidth / 2f, cellWidth / 2f), (currentIndex * cellHeight) + Random.Range(-cellHeight / 2f, cellHeight / 2f)), Quaternion.identity, transform);
+        startNode = graph[currentIndex, 0];
 
 		for (int j = 1; j < graph.GetLength(1); j++)
 		{
@@ -82,8 +84,8 @@ public class Graph : MonoBehaviour
 
             graph[currentIndex, j] = Instantiate(nodePrefab, new Vector2((j * cellWidth) + Random.Range(-cellWidth / 2.5f, cellWidth / 2.5f), (currentIndex * cellHeight) + Random.Range(-cellHeight / 2f, cellHeight / 2f)), Quaternion.identity, transform);
             Connect(graph[previousIndex, j - 1].transform.position, graph[currentIndex, j].transform.position, Vector2.Distance(graph[previousIndex, j - 1].transform.position, graph[currentIndex, j].transform.position), graph[previousIndex, j - 1].transform);
-            graph[previousIndex, j - 1].GetComponent<Button>().hasConnections = true;
-            graph[currentIndex, j].GetComponent<Button>().hasConnections = true;
+            graph[previousIndex, j - 1].GetComponent<Button>().connections.Add(graph[currentIndex, j]);
+			graph[currentIndex, j].GetComponent<Button>().connections.Add(graph[previousIndex, j - 1]);
         }
 
 		for (int i = 0; i < graph.GetLength(0); i++)
@@ -104,45 +106,39 @@ public class Graph : MonoBehaviour
                             if (distance < 7f)
                             {
                                 Connect(graph[i, j].transform.position, node.transform.position, distance, graph[i, j].transform);
-								graph[i, j].GetComponent<Button>().hasConnections = true;
-								node.GetComponent<Button>().hasConnections = true;
-                            }
+								graph[i, j].GetComponent<Button>().connections.Add(node);
+								node.GetComponent<Button>().connections.Add(graph[i, j]);
+							}
                         }
                     }
                 }
             }
         }
 
+		List<GameObject> validNodes = FindValidNodes(startNode.GetComponent<Button>(), new List<GameObject>() { startNode });
+
         foreach(GameObject node in graph)
         {
-            if (node && !node.GetComponent<Button>().hasConnections) Destroy(node);
+            if (node && !validNodes.Contains(node))
+            {
+                Destroy(node);
+            }
+        }
+    }
+
+    private List<GameObject> FindValidNodes(Button node, List<GameObject> validNodes)
+    {
+        foreach (GameObject connection in node.connections)
+        {
+            if (!validNodes.Contains(connection))
+            {
+                validNodes.Add(connection);
+                FindValidNodes(connection.GetComponent<Button>(), validNodes);
+            }
         }
 
-        //   for (int i = 0; i < graph.GetLength(0); i++)
-        //   {
-        //       for (int j = 0; j < graph.GetLength(1); j++)
-        //       {
-        //           if (Random.Range(0f, 1f) < 0.6f)
-        //           {
-        //               graph[i, j] = Instantiate(nodePrefab, new Vector2((j * 5) + Random.Range(-2.5f, 2.5f), (i * 5) + Random.Range(-2.5f, 2.5f)), Quaternion.identity, transform);
-
-        //               // This needs to change
-        //               foreach(GameObject node in graph)
-        //{
-        //                   if(node != null && node != graph[i, j])
-        //	{
-        //                       float distance = Vector2.Distance(graph[i, j].transform.position, node.transform.position);
-
-        //                       if (distance < 7f)
-        //		{
-        //                           Connect(graph[i, j].transform.position, node.transform.position, distance);
-        //		}
-        //	}
-        //}
-        //           }
-        //       }
-        //   }
-    }
+        return validNodes;
+	}
 
 	private void OnDrawGizmos()
 	{
