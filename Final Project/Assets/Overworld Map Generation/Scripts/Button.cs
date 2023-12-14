@@ -7,8 +7,6 @@ using UnityEngine.Events;
 public class Button : MonoBehaviour
 {
     [SerializeField] private UnityEvent unityEvent;
-    private Ray mouseRay;
-    private RaycastHit hit;
 
 	[SerializeField]
 	private GameObject[] planetPrefabs;
@@ -18,13 +16,13 @@ public class Button : MonoBehaviour
     [SerializeField]
     private Gradient[] sunGradients;
 
-    [SerializeField]
     private Transform planetParent;
     private GameObject[] system;
 
 	// Start is called before the first frame update
 	void Start()
     {
+        planetParent = GameObject.Find("Planet Parent").transform;
         unityEvent.AddListener(GenerateSystem);
     }
 
@@ -70,10 +68,12 @@ public class Button : MonoBehaviour
             system[i].GetComponent<Planet>().GeneratePlanet();
 
             system[i].transform.position = new Vector3(sun.GetComponent<Planet>().shapeSettings.planetRadius + 10 * i, 0, 0);
-            system[i].transform.Rotate(new Vector3(0, Random.Range(0f, 360f), 0));
+            system[i].transform.Rotate(new Vector3(0, system[i].GetComponent<Planet>().rotation, 0));
 
             system[i].GetComponent<SphereCollider>().radius = system[i].GetComponent<Planet>().shapeSettings.planetRadius;
 
 		}
+
+        Camera.main.transform.position = new Vector3(system[system.Length - 1].transform.position.x / 2f, 0f, Mathf.Clamp(-system[system.Length - 1].transform.position.x + 10f, -60f, -40f));
 	}
 }

@@ -32,14 +32,47 @@ public class Planet : MonoBehaviour
     MeshFilter[] meshFilters;
     TerrainFace[] terrainFaces;
 
+    public float rotation;
+    private float rotationSpeed;
+
 	private void Start()
 	{
         unityEvent.AddListener(() => SceneManager.LoadScene("Dungeon"));
+
+        if (name.Contains("Sun"))
+        {
+            rotation = 0f;
+			rotationSpeed = 0.0001f;
+		}
+        else
+        {
+            rotation = Random.Range(0f, 360f);
+			rotationSpeed = Random.Range(0.05f, 0.5f);
+		}
 	}
 
 	private void Update()
 	{
         if(GameManager.CheckClick(gameObject)) unityEvent.Invoke();
+
+		if (name.Contains("Sun"))
+        {
+			// Lerp Perlin Noise
+			rotation += rotationSpeed;
+			if (rotation < 0f || rotation > 1f) rotationSpeed *= -1f;
+
+			shapeSettings.noiseLayers[1].noiseSettings.ridgidNoiseSettings.centre.x = Mathf.Lerp(-100f, 100f, rotation);
+			shapeSettings.noiseLayers[1].noiseSettings.ridgidNoiseSettings.centre.y = Mathf.Lerp(-100f, 100f, rotation);
+			shapeSettings.noiseLayers[1].noiseSettings.ridgidNoiseSettings.centre.z = Mathf.Lerp(-100f, 100f, rotation);
+			//GenerateMesh();
+		}
+        else
+        {
+			rotation += rotationSpeed;
+			rotation %= 360f;
+
+			transform.rotation = Quaternion.Euler(0, rotation, 0);
+		}
 	}
 
 	void Initialize()
