@@ -20,15 +20,6 @@ public class Graph : MonoBehaviour
     private GameObject[,] graph;
     private GameObject startNode;
 
-    [SerializeField]
-    private int seed;
-
-	private void Awake()
-	{
-		if(seed == -1) seed = Random.Range(0, 100000); // Only set a random seed if we want a random one
-		Random.InitState(seed);
-	}
-
 	// Start is called before the first frame update
 	void Start()
     {

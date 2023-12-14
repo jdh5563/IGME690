@@ -31,15 +31,8 @@ public class Button : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if(Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject == gameObject)
-        {
-            if(Input.GetMouseButtonDown(0))
-            {
-                unityEvent.Invoke();
-            }
-        }
-    }
+		if (GameManager.CheckClick(gameObject)) unityEvent.Invoke();
+	}
 
     public void GenerateSystem()
     {
@@ -78,6 +71,9 @@ public class Button : MonoBehaviour
 
             system[i].transform.position = new Vector3(sun.GetComponent<Planet>().shapeSettings.planetRadius + 10 * i, 0, 0);
             system[i].transform.Rotate(new Vector3(0, Random.Range(0f, 360f), 0));
-        }
+
+            system[i].GetComponent<SphereCollider>().radius = system[i].GetComponent<Planet>().shapeSettings.planetRadius;
+
+		}
 	}
 }

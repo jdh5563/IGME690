@@ -250,7 +250,6 @@ MonoBehaviour:
   gridHeight: 4
   cellWidth: 5
   cellHeight: 5
-  seed: -1
 --- !u!4 &1366837361
 Transform:
   m_ObjectHideFlags: 0

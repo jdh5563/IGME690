@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class Planet : MonoBehaviour
 {
@@ -14,7 +17,10 @@ public class Planet : MonoBehaviour
     public ShapeSettings shapeSettings;
     public ColourSettings colourSettings;
 
-    [HideInInspector]
+    [SerializeField]
+    private UnityEvent unityEvent;
+
+	[HideInInspector]
     public bool shapeSettingsFoldout;
     [HideInInspector]
     public bool colourSettingsFoldout;
@@ -26,8 +32,17 @@ public class Planet : MonoBehaviour
     MeshFilter[] meshFilters;
     TerrainFace[] terrainFaces;
 
+	private void Start()
+	{
+        unityEvent.AddListener(() => SceneManager.LoadScene("Dungeon"));
+	}
 
-    void Initialize()
+	private void Update()
+	{
+        if(GameManager.CheckClick(gameObject)) unityEvent.Invoke();
+	}
+
+	void Initialize()
     {
         shapeGenerator.UpdateSettings(shapeSettings);
         colourGenerator.UpdateSettings(colourSettings);

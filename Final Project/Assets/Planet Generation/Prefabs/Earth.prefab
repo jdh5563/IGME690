@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3760727284058199486}
   - component: {fileID: 307410866719435063}
+  - component: {fileID: 5111086422093830267}
   m_Layer: 0
   m_Name: Earth
   m_TagString: Untagged
@@ -49,6 +50,9 @@ MonoBehaviour:
   faceRenderMask: 0
   shapeSettings: {fileID: 11400000, guid: bb563e90654574d4cb7d931456630f79, type: 2}
   colourSettings: {fileID: 11400000, guid: 4d2914748ff1c4089acd77328cfcb02e, type: 2}
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls: []
   shapeSettingsFoldout: 1
   colourSettingsFoldout: 1
   meshFilters:
@@ -58,3 +62,24 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!135 &5111086422093830267
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5276989613019303226}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}

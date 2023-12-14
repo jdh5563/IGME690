@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1201544344726583413}
   - component: {fileID: 5151646637474690640}
+  - component: {fileID: 3860042846894730859}
   m_Layer: 0
   m_Name: Neptune
   m_TagString: Untagged
@@ -49,6 +50,9 @@ MonoBehaviour:
   faceRenderMask: 0
   shapeSettings: {fileID: 11400000, guid: 796c8c56034c2cd4d9ff018e3bab596c, type: 2}
   colourSettings: {fileID: 11400000, guid: e009f460fe844d14c8dfe6c02224f776, type: 2}
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls: []
   shapeSettingsFoldout: 0
   colourSettingsFoldout: 1
   meshFilters:
@@ -58,3 +62,24 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!135 &3860042846894730859
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3684375157098000382}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
