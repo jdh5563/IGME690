@@ -334,7 +334,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1404047158}
   m_Layer: 0
-  m_Name: Planet Parent
+  m_Name: System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
